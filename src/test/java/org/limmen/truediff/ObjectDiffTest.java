@@ -1,5 +1,7 @@
 package org.limmen.truediff;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -61,5 +63,55 @@ public class ObjectDiffTest {
 
     assertEquals(1, result.size());
     assertEquals(expected, result.get(0));
+  }
+
+  @Test
+  public void lists() {
+    Complex base = new Complex();
+    Complex target = new Complex();
+
+    base.setNames(Arrays.asList("one", "two"));
+    target.setNames(Arrays.asList("three"));
+    target.setNumber(2);
+
+    List<Diff> result = fixture.compare(base, target);
+
+    assertEquals(4, result.size());
+
+    List<Diff> expected = new ArrayList<>();
+
+    expected.add(Diff.builder()
+            .type(DiffType.ADD)
+            .newValue("three")
+            .oldValue(null)
+            .propertyPath("/")
+            .propertyName("names")
+            .build());
+    expected.add(Diff.builder()
+            .type(DiffType.DELETE)
+            .newValue(null)
+            .oldValue("one")
+            .propertyPath("/")
+            .propertyName("names")
+            .build());
+    expected.add(Diff.builder()
+            .type(DiffType.DELETE)
+            .newValue(null)
+            .oldValue("two")
+            .propertyPath("/")
+            .propertyName("names")
+            .build());
+    expected.add(Diff.builder()
+            .type(DiffType.ADD)
+            .newValue("2")
+            .oldValue(null)
+            .propertyPath("/")
+            .propertyName("number")
+            .build());
+
+    assertEquals(expected.get(0), result.get(0));
+    assertEquals(expected.get(1), result.get(1));
+    assertEquals(expected.get(2), result.get(2));
+    assertEquals(expected.get(3), result.get(3));
   }
 }
