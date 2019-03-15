@@ -80,8 +80,12 @@ public class ObjectDiff {
 
       if (Collection.class.isAssignableFrom(field.getType())) {
         changes.addAll(compareCollection((Collection<?>) baseValue, (Collection<?>) targetValue, field.getName(), stack));
-      } else {
+      } else if (field.getType().isPrimitive() || field.getType().getPackageName().startsWith("java.lang")) {
         changes.addAll(comparePrimitiveField(baseValue, targetValue, field.getName(), stack));
+      } else {
+        stack.add(field.getName());
+        changes.addAll(compareObjects(baseValue, targetValue, stack));
+        stack.pop();
       }
     }
 
