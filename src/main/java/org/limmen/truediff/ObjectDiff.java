@@ -20,6 +20,7 @@ public class ObjectDiff {
     if (base == null && target == null) {
       // nothing changes
     } else if (base == null && target != null) {
+
       changes.addAll(target.stream()
               .map(item -> Diff.builder()
               .type(DiffType.ADD)
@@ -29,7 +30,9 @@ public class ObjectDiff {
               .propertyPath(flattenStack(stack))
               .build())
               .collect(Collectors.toList()));
+
     } else if (base != null && target == null) {
+
       changes.addAll(base.stream()
               .map(item -> Diff.builder()
               .type(DiffType.DELETE)
@@ -39,6 +42,7 @@ public class ObjectDiff {
               .propertyPath(flattenStack(stack))
               .build())
               .collect(Collectors.toList()));
+
     } else if (base != null && target != null) {
 
       changes.addAll(target.stream()
